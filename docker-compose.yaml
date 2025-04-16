@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  db2:
+    # 使用IBM官方镜像（需要先登录）
+    image: ibmcom/db2:11.5.8.0
+    container_name: db2-serversrc/
+    privileged: true
+    environment:
+      LICENSE: accept                   # 接受许可协议
+      DB2INSTANCE: db2inst1             # 实例用户名
+      DB2INST1_PASSWORD: Db2@1234       # 密码需包含大写/数字/特殊字符
+      DBNAME: testdb                    # 初始数据库名称
+      BLU: false                        # 禁用BLU加速
+      SAMPLEDATABASE: false             # 不创建样本数据库
+      UPDATEAVAIL: NO                   # 禁用自动更新
+    ports:
+      - "50000:50000"                   # 默认数据库端口
+    volumes:
+      - ./db2:/database/data  # 数据持久化目录
+    healthcheck:
+      test: "curl --fail http://localhost:50000 || exit 1"
+      interval: 10s
+      timeout: 10s
+      retries: 5
+    sysctls:
+      - kernel.msgmax=65536             # 必需的内核参数
+      - kernel.msgmnb=65536

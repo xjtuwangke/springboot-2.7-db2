@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: jdbc:db2://192.168.69.189:50000/testdb
+    username: db2inst1
+    password: Db2@1234
+    driver-class-name: com.ibm.db2.jcc.DB2Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    show-sql: true
+    database-platform: org.hibernate.dialect.DB2Dialect
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          lob.non_contextual_creation: true
+
+  flyway:
+    locations: classpath:db/migration
+    baseline-on-migrate: true
+    validate-on-migrate: true
+    connect-retries: 5
+    init-sql: SET CURRENT SCHEMA DB2INST1
+
+  main:
+    web-application-type: reactive  # 显式启用WebFlux
+
+logging:
+  level:
+    org.springframework.data: INFO
+    org.hibernate.SQL: DEBUG
+    org.hibernate.type: TRACE
